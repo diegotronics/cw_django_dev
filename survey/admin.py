@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from survey.models import Answer, Question
+from survey.models import Answer, LikeDislike, Question
 
 
 class AnswerInline(admin.TabularInline):
@@ -18,3 +18,4 @@ class QuestionAdmin(admin.ModelAdmin):
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer)
+admin.site.register(LikeDislike)

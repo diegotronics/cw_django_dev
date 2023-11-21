@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
-from survey.models import Answer, Question
+from survey.models import Answer, LikeDislike, Question
 
 
 class QuestionListView(ListView):
@@ -29,7 +29,7 @@ class QuestionUpdateView(UpdateView):
 
 @login_required
 def answer_question(request):
-    # avoid non POST requests
+    # Avoid non POST requests
     if request.method != "POST":
         return JsonResponse({"error": "Method Not Allowed"}, status=405)
 
@@ -51,10 +51,31 @@ def answer_question(request):
     return JsonResponse({"ok": True})
 
 
+@login_required
 def like_dislike_question(request):
-    question_pk = request.POST.get("question_pk")
-    if not request.POST.get("question_pk"):
-        return JsonResponse({"ok": False})
-    question = Question.objects.filter(pk=question_pk)[0]
-    # TODO: Dar Like
+    # Avoid non POST requests
+    if request.method != "POST":
+        return JsonResponse({"error": "Method Not Allowed"}, status=405)
+
+    # Get the question
+    try:
+        question_pk = request.POST.get("question_pk")
+        print(request.POST)
+        question = Question.objects.get(pk=question_pk)
+    except Question.DoesNotExist:
+        # if question does not exists, return an error
+        return JsonResponse({"ok": False}, status=400)
+
+    # verify value is valid
+    value = int(request.POST.get("value"))
+    if value not in [-1, 1]:
+        return JsonResponse({"ok": False}, status=400)
+
+    # create or update to garantize only one answer per user
+    obj, created = LikeDislike.objects.update_or_create(
+        question=question, author=request.user
+    )
+    obj.value = value
+    obj.save()
+
     return JsonResponse({"ok": True})

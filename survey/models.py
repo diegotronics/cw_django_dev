@@ -23,6 +23,12 @@ class Question(models.Model):
         # return integer from 0 to 5
         return int(round(media))
 
+    def user_likes(self):
+        return self.likes_dislikes.filter(value=1).count()
+
+    def user_dislikes(self):
+        return self.likes_dislikes.filter(value=-1).count()
+
     def get_absolute_url(self):
         return reverse("survey:question-edit", args=[self.pk])
 
@@ -51,3 +57,26 @@ class Answer(models.Model):
     )
     value = models.PositiveIntegerField("Respuesta", default=0)
     comment = models.TextField("Comentario", default="", blank=True)
+
+
+class LikeDislike(models.Model):
+    author = models.ForeignKey(
+        get_user_model(),
+        related_name="likes_dislikes",
+        verbose_name="LikeDislike",
+        on_delete=models.CASCADE,
+    )
+    question = models.ForeignKey(
+        Question,
+        related_name="likes_dislikes",
+        verbose_name="LikeDislike",
+        on_delete=models.CASCADE,
+    )
+    LIKE_DISLIKE_VALUES = ((1, "Like"), (-1, "Dislike"))
+    value = models.SmallIntegerField(
+        "Like/Dislike", choices=LIKE_DISLIKE_VALUES, default=1
+    )
+
+    class Meta:
+        # an user can only give one like or dislike to a question
+        unique_together = ("author", "question")
