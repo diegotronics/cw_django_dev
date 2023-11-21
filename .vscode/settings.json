@@ -11,6 +11,7 @@
   "python.analysis.diagnosticSeverityOverrides": {
     "reportUnusedImports": "warning",
     "reportMissingImports": "none",
-    "reportMissingModuleSource": "none"
+    "reportMissingModuleSource": "none",
+    "reportGeneralTypeIssues": "none"
   }
 }
