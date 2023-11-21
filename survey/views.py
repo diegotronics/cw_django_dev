@@ -26,6 +26,10 @@ class QuestionUpdateView(UpdateView):
     fields = ["title", "description"]
     template_name = "survey/question_form.html"
 
+    def get_queryset(self):
+        # Only the author of the question can edit it
+        return super().get_queryset().filter(author=self.request.user)
+
 
 @login_required
 def answer_question(request):
