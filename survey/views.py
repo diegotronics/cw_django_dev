@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
@@ -10,7 +11,7 @@ class QuestionListView(ListView):
     model = Question
 
 
-class QuestionCreateView(CreateView):
+class QuestionCreateView(LoginRequiredMixin, CreateView):
     model = Question
     fields = ["title", "description"]
     redirect_url = ""
@@ -21,7 +22,7 @@ class QuestionCreateView(CreateView):
         return super().form_valid(form)
 
 
-class QuestionUpdateView(UpdateView):
+class QuestionUpdateView(LoginRequiredMixin, UpdateView):
     model = Question
     fields = ["title", "description"]
     template_name = "survey/question_form.html"
@@ -30,9 +31,14 @@ class QuestionUpdateView(UpdateView):
         # Only the author of the question can edit it
         return super().get_queryset().filter(author=self.request.user)
 
+    def get_success_url(self):
+        return self.request.GET.get("next", "/")
 
-@login_required
+
 def answer_question(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Not Authorized"}, status=401)
+
     # Avoid non POST requests
     if request.method != "POST":
         return JsonResponse({"error": "Method Not Allowed"}, status=405)
@@ -55,8 +61,10 @@ def answer_question(request):
     return JsonResponse({"ok": True})
 
 
-@login_required
 def like_dislike_question(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Not Authorized"}, status=401)
+
     # Avoid non POST requests
     if request.method != "POST":
         return JsonResponse({"error": "Method Not Allowed"}, status=405)

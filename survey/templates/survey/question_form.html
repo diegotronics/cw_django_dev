@@ -1,12 +1,13 @@
-{% extends 'base.html' %}
-
-{% block content %}
-    <h1>Hacer pregunta</h1>
-    <div class="d-flex">
-        <form method="post">{% csrf_token %}
-            {{ form.as_p }}
-            <hr>
-            <input class="btn btn-primary" type="submit" value="Guardar">
-        </form>
-    </div>
+{% extends 'base.html' %} {% block content %} {% if question.pk %}
+<h1>Editar pregunta</h1>
+{% else %}
+<h1>Hacer pregunta</h1>
+{% endif %}
+<div class="d-flex">
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <hr />
+    <input class="btn btn-primary" type="submit" value="Guardar" />
+  </form>
+</div>
 {% endblock %}

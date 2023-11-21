@@ -87,7 +87,12 @@
           window.location.reload()
         },
         error: function (data) {
-          alert('Error al guardar la respuesta.')
+          if (data.status === 401) {
+            alert('Debe iniciar sesión para responder.')
+            window.location.href = '{% url "login" %}'
+          } else {
+            alert('Error al guardar la respuesta.')
+          }
         }
       })
     })
@@ -116,7 +121,12 @@
           window.location.reload()
         },
         error: function (data) {
-          alert('Error al guardar la respuesta.')
+          if (data.status === 401) {
+            alert('Debe iniciar sesión para dar like o dislike.')
+            window.location.href = '{% url "login" %}'
+          } else {
+            alert('Error al guardar la respuesta.')
+          }
         }
       })
     }
