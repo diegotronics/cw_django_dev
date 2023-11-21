@@ -9,6 +9,14 @@ from survey.models import Answer, LikeDislike, Question
 
 class QuestionListView(ListView):
     model = Question
+    template_name = "survey/question_list.html"
+
+    def get_queryset(self):
+        # get all questions
+        queryset = super().get_queryset()
+        # get ranking for each question
+        queryset = sorted(queryset, key=lambda x: x.ranking(), reverse=True)
+        return queryset
 
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):
