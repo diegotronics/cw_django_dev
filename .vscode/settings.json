@@ -1,0 +1,16 @@
+{
+  "isort.args": ["--profile", "black"],
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportUnusedImports": "warning",
+    "reportMissingImports": "none",
+    "reportMissingModuleSource": "none"
+  }
+}
