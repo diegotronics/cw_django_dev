@@ -43,7 +43,6 @@ class Question(models.Model):
         today = timezone.now().astimezone(pytz.timezone(TIME_ZONE)).date()
         created = self.created
         days = (today - created).days
-        print(days)
         return (
             self.answers.count() * 10
             + self.likes_dislikes.filter(value=1).count() * 5

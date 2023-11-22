@@ -12,7 +12,9 @@
         <span class="fw-bold">{{ question.title }}</span>
       </div>
       <div class="col-2">
-        <span class="fw-lighter">Autor:</span> {{ question.author }}
+        <span>Autor:</span> {{ question.author }}
+        <br />
+        <span>Fecha:</span> {{ question.created|date:"d/m/Y" }}
         <br />
         {% if question.author == request.user %}
         <a class="fw-lighter" href="{{ question.get_absolute_url }}">Editar</a>

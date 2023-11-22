@@ -7,9 +7,7 @@ register = template.Library()
 def user_value(question, user):
     if not user.is_authenticated:
         return 0
-    hola = question.user_value(user)
-    print(hola)
-    return hola
+    return question.user_value(user)
 
 
 @register.filter(name="user_likes")
