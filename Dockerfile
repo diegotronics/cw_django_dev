@@ -13,6 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiamos el resto del código de la aplicación
 COPY . .
 
+# Corremos las migraciones
+RUN python manage.py migrate
+
 # Exponemos el puerto donde corre Gunicorn
 EXPOSE 8000
 
