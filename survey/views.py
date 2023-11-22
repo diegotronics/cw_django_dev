@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import JsonResponse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
@@ -10,12 +11,14 @@ from survey.models import Answer, LikeDislike, Question
 class QuestionListView(ListView):
     model = Question
     template_name = "survey/question_list.html"
+    paginate_by = 10
 
     def get_queryset(self):
         # get all questions
         queryset = super().get_queryset()
         # get ranking for each question
         queryset = sorted(queryset, key=lambda x: x.ranking(), reverse=True)
+
         return queryset
 
 
