@@ -22,6 +22,21 @@ class QuestionListView(ListView):
         return queryset
 
 
+class MyQuestionListView(LoginRequiredMixin, ListView):
+    model = Question
+    template_name = "survey/question_list.html"
+    paginate_by = 10
+
+    def get_queryset(self):
+        # get all my questions
+        queryset = super().get_queryset().filter(author=self.request.user)
+
+        # get ranking for each question
+        queryset = sorted(queryset, key=lambda x: x.ranking(), reverse=True)
+
+        return queryset
+
+
 class QuestionCreateView(LoginRequiredMixin, CreateView):
     model = Question
     fields = ["title", "description"]
@@ -31,6 +46,9 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
 
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.request.GET.get("next", "/")
 
 
 class QuestionUpdateView(LoginRequiredMixin, UpdateView):
