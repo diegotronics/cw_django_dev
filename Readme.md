@@ -66,7 +66,8 @@ Los cambios realizados para resolver la prueba técnica fueron los siguientes:
 - Creación de las pruebas unitarias para los modelos y algunas vistas de Survey
 
 **Bonus:**
-
+- Agregar la fecha de cada pregunta
+- Enlace para editar la pregunta que el usuario realizó
 - Agregar una nueva vista para que los usuarios puedan ver sus preguntas. (mis preguntas)
 - Nueva rama "heroku" para desplegar la aplicación en Heroku con conexión a una base de datos PostgreSQL.
 
