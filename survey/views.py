@@ -81,6 +81,11 @@ def answer_question(request):
         # if question does not exists, return an error
         return JsonResponse({"ok": False}, status=400)
 
+    # verify value is valid
+    value = int(request.POST.get("value"))
+    if value not in [1, 2, 3, 4, 5]:
+        return JsonResponse({"ok": False}, status=400)
+
     # create or update to garantize only one answer per user
     obj, created = Answer.objects.update_or_create(
         question=question, author=request.user
