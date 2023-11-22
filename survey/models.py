@@ -1,8 +1,13 @@
-from datetime import datetime
-
+import pytz
+from django import template
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
+
+from quizes.settings import TIME_ZONE
+
+register = template.Library()
 
 
 class Question(models.Model):
@@ -16,19 +21,17 @@ class Question(models.Model):
     title = models.CharField("Título", max_length=200)
     description = models.TextField("Descripción")
 
-    def user_value(self):
-        media = 0
-        answers = self.answers.all()
-        if answers:
-            media = sum([answer.value for answer in answers]) / len(answers)
-        # return integer from 0 to 5
-        return int(round(media))
+    def user_value(self, user):
+        try:
+            return self.answers.get(author=user).value
+        except Answer.DoesNotExist:
+            return 0
 
-    def user_likes(self):
-        return self.likes_dislikes.filter(value=1).count()
+    def user_likes(self, user):
+        return self.likes_dislikes.filter(author=user, value=1).exists()
 
-    def user_dislikes(self):
-        return self.likes_dislikes.filter(value=-1).count()
+    def user_dislikes(self, user):
+        return self.likes_dislikes.filter(author=user, value=-1).exists()
 
     def ranking(self):
         """
@@ -37,7 +40,10 @@ class Question(models.Model):
         - Cada dislike resta 3 puntos al ranking
         - Las preguntas del día de hoy, tienen un extra de 10 puntos
         """
-        days = (datetime.today().date() - self.created).days
+        today = timezone.now().astimezone(pytz.timezone(TIME_ZONE)).date()
+        created = self.created
+        days = (today - created).days
+        print(days)
         return (
             self.answers.count() * 10
             + self.likes_dislikes.filter(value=1).count() * 5
